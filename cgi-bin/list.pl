@@ -8,6 +8,14 @@ my $q = CGI->new();
 print $q->header(-type => "text/xml", -charset => "utf-8");
 my $owner = $q->param("owner");
 
+my $contenido;
+if(defined($owner)){
+  my @articulos =getArticulos($owner);
+  if(@articulos){
+    $contenido = renderContenido(\@articulos,$owner);
+  }
+}
+print renderXML("articles",$contenido);
 
 sub getArticulos{
   my $owner = $_[0];
@@ -27,4 +35,27 @@ sub getArticulos{
   $sth->finish;
   $dbh->disconnect;
   return @articulos;
+}
+sub renderXML{
+  my $principal = $_[0];
+  my $contenido  = $_[1];
+  my $xml="";
+  $xml .= "<$principal>\n";
+  if(defined($contenido)){
+    $xml .= $contenido;
+  }
+  $xml .= "</$principal>\n";
+}
+sub renderContenido{
+  my @titulos =@{$_[0]};
+  my $owner =$_[1];
+  my $str = "";
+  foreach my $titulo (@titulos){
+    my $arti = "  <article>\n";
+    $arti .= "    <owner>".$owner."</owner>\n";
+    $arti .= "    <title>".$titulo."</title>\n";
+    $arti .= "  </article>\n";
+    $str .= $arti;
+  }
+  return $str;
 }
