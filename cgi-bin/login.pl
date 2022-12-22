@@ -9,6 +9,20 @@ print $q->header(-type => "text/xml", -charset => "utf-8");
 my $user = $q->param("user");
 my $password = $q->param("password");
 
+my $contenido;
+if(defined($user) && defined($password)){
+  my @info = loginUser($user,$password);
+  if(@info){
+    my @campos = ("owner","firstName","lastName");
+    my %xml = (
+      $campos[0] =>$info[0],
+      $campos[1] =>$info[1],
+      $campos[2] =>$info[2],
+    );
+    $contenido = renderContenido(\@campos,\%xml);
+  }
+}
+printXML("user",$contenido);
 
 sub loginUser{
   my $userQuery = $_[0];
