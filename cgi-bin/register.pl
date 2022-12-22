@@ -30,4 +30,21 @@ sub registerUser{
   $dbh->disconnect;
   return $flag;
 }
-
+sub printXML{
+  my $principal = $_[0];
+  my $contenido  = $_[1];
+  print "<$principal>\n";
+  if(defined($contenido)){
+    print $contenido;
+  }
+  print "</$principal>\n";
+}
+sub renderContenido{
+  my @claves =@{$_[0]};
+  my %campos =%{$_[1]};
+  my $str = "";
+  foreach my $key (@claves){
+    $str .= "  <$key>".$campos{$key}."</$key>\n";
+  }
+  return $str;
+}
