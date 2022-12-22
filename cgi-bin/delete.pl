@@ -9,6 +9,21 @@ print $q->header(-type => "text/xml", -charset => "utf-8");
 my $title = $q->param("title");
 my $owner = $q->param("owner");
 
+my $contenido;
+if(defined($title) && defined($owner)){
+  my $flag =borrarArticulo($title,$owner);
+  if($flag != 0){
+    my @campos = ("owner","title");
+    my %xml = (
+      $campos[0] =>$owner,
+      $campos[1] =>$title,
+    );
+    $contenido = renderContenido(\@campos,\%xml);
+  }
+}
+
+printXML("article",$contenido);
+
 sub borrarArticulo{
   my ($title,$owner) = ($_[0],$_[1]);
   my $user = "alumno";
