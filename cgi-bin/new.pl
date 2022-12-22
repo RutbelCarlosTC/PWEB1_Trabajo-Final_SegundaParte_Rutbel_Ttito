@@ -10,6 +10,20 @@ my $title = $q->param("title");
 my $text = $q->param("text");
 my $owner = $q->param("owner");
 
+my $contenido;
+if(defined($title) && defined($text) && defined($owner)){
+  my $flag =insertarArticulo($title,$text,$owner);
+  if($flag){
+    my @campos = ("title","text");
+    my %xml = (
+      $campos[0] =>$title,
+      $campos[1] =>$text,
+    );
+    $contenido = renderContenido(\@campos,\%xml);
+  }
+}
+printXML("article",$contenido);
+
 sub insertarArticulo{
   my $title = $_[0];
   my $text = $_[1];
